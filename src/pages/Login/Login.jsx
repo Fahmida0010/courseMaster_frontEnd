@@ -20,22 +20,24 @@ export default function Login() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            setLoading(true);
-            setError(null);
+    e.preventDefault();
+    try {
+        setLoading(true);
+        setError(null);
 
-            const res = await loginUser(form);
-            saveToken(res.data.token);
+        const res = await loginUser(form);
+        
+        // Token localstorage-e set korbe
+        saveToken(res.data.token);
 
-            navigate("/");
-            window.location.reload();
-        } catch (err) {
-            setError(err.response?.data?.message || "Login failed. Please check your credentials.");
-        } finally {
-            setLoading(false);
-        }
-    };
+        // Home page-e navigate kore window reload dynamic hobe
+        window.location.href = "/"; 
+    } catch (err) {
+        setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="max-w-lg mx-auto px-4 py-10">
