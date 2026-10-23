@@ -19,25 +19,37 @@ export default function Login() {
         setForm({ email, password });
     };
 
+    // FIX: Hardcoded token er poriborte direct API call kore fresh valid token nibe
+    const handleDirectPortalLogin = async (email, password, portalPath) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const res = await loginUser({ email, password });
+            saveToken(res.data.token);
+            navigate(portalPath);
+            window.location.reload();
+        } catch (err) {
+            setError(err.response?.data?.message || "Quick login failed. Please seed database.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        setLoading(true);
-        setError(null);
+        e.preventDefault();
+        try {
+            setLoading(true);
+            setError(null);
 
-        const res = await loginUser(form);
-        
-        // Token localstorage-e set korbe
-        saveToken(res.data.token);
-
-        // Home page-e navigate kore window reload dynamic hobe
-        window.location.href = "/"; 
-    } catch (err) {
-        setError(err.response?.data?.message || "Login failed. Please check your credentials.");
-    } finally {
-        setLoading(false);
-    }
-};
+            const res = await loginUser(form);
+            saveToken(res.data.token);
+            window.location.href = "/"; 
+        } catch (err) {
+            setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="max-w-lg mx-auto px-4 py-10">
@@ -84,36 +96,22 @@ export default function Login() {
                             </button>
                         </div>
 
-                        {/* Dev Route Inspector Bypass */}
+                        {/* Direct Portal Bypass (Now uses real dynamic API login) */}
                         <div className="pt-2 border-t border-base-300/80">
                             <p className="text-[11px] font-semibold text-base-content/70 mb-1.5 flex items-center justify-between">
-                                <span>🔓 Direct Login & Inspect Routes (Dev Bypass):</span>
+                                <span>🔓 Direct Portal Login (API Bypass):</span>
                             </p>
                             <div className="grid grid-cols-2 gap-2">
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzFmMzdlNjYwMDZmMWRjYmI1YjUyNiIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzkxMDk4NTg4fQ.4s3Ygh9GtTper2SB8byNILxPSxZ8y3pO-WyFupmQ0Ws";
-                                        localStorage.setItem("token", token);
-                                        localStorage.setItem("user_token", token);
-                                        localStorage.setItem("dev_bypass", "true");
-                                        navigate("/student");
-                                        window.location.reload();
-                                    }}
+                                    onClick={() => handleDirectPortalLogin("student@coursemaster.com", "student123", "/student")}
                                     className="btn btn-xs btn-primary font-bold text-xs"
                                 >
                                     🎓 Student Portal
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzFmMzdlNjYwMDZmMWRjYmI1YjUyNSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MTA5ODU4OH0.vL3Hj-fEGVbouM-cZ9RtMIpaCU5ugRwsNqaKyYdxdNY";
-                                        localStorage.setItem("token", token);
-                                        localStorage.setItem("user_token", token);
-                                        localStorage.setItem("dev_bypass", "true");
-                                        navigate("/admin");
-                                        window.location.reload();
-                                    }}
+                                    onClick={() => handleDirectPortalLogin("admin@coursemaster.com", "admin123", "/admin")}
                                     className="btn btn-xs btn-secondary font-bold text-xs"
                                 >
                                     👑 Admin Portal

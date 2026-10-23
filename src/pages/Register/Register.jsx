@@ -15,13 +15,13 @@ export default function Register() {
     const handleChange = (e) =>
         setForm({ ...form, [e.target.name]: e.target.value });
 
-    const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
             setError(null);
 
-            // পাসওয়ার্ড ভ্যালিডেশন চেক
+    
             if (form.password.length < 6) {
                 setError("Password must be at least 6 characters long.");
                 setLoading(false);
@@ -33,18 +33,21 @@ export default function Register() {
                 email: form.email,
                 password: form.password,
             };
+
             if (form.adminKey.trim()) {
+                payload.role = "admin";
                 payload.adminKey = form.adminKey.trim();
+            } else {
+                payload.role = "student";
             }
 
-            // 2. registerAsync ডিসপাচ করুন (এটি সফল হলে স্বয়ংক্রিয়ভাবে টোকেন সেভ করে নেবে)
+            
             const resultAction = await dispatch(registerAsync(payload));
 
             if (registerAsync.fulfilled.match(resultAction)) {
-                // রেজিস্ট্রেশন সফল হলে হোমপেজে রিডাইরেক্ট করুন
                 navigate("/");
             } else {
-                // কোনো এরর থাকলে সেটি দেখান
+        
                 setError(resultAction.payload || "Registration failed");
             }
         } catch (err) {
