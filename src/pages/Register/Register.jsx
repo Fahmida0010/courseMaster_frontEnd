@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { registerUser } from "../../services/auth.api";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { registerAsync } from "../../store/slices/authSlice";
 
 export default function Register() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [form, setForm] = useState({ name: "", email: "", password: "", adminKey: "" });
     const [loading, setLoading] = useState(false);
@@ -19,7 +21,13 @@ export default function Register() {
             setLoading(true);
             setError(null);
 
-            // Only send adminKey if it's provided
+            // পাসওয়ার্ড ভ্যালিডেশন চেক
+            if (form.password.length < 6) {
+                setError("Password must be at least 6 characters long.");
+                setLoading(false);
+                return;
+            }
+
             const payload = {
                 name: form.name,
                 email: form.email,
@@ -29,11 +37,18 @@ export default function Register() {
                 payload.adminKey = form.adminKey.trim();
             }
 
-            await registerUser(payload);
+            // 2. registerAsync ডিসপাচ করুন (এটি সফল হলে স্বয়ংক্রিয়ভাবে টোকেন সেভ করে নেবে)
+            const resultAction = await dispatch(registerAsync(payload));
 
-            navigate("/login");
+            if (registerAsync.fulfilled.match(resultAction)) {
+                // রেজিস্ট্রেশন সফল হলে হোমপেজে রিডাইরেক্ট করুন
+                navigate("/");
+            } else {
+                // কোনো এরর থাকলে সেটি দেখান
+                setError(resultAction.payload || "Registration failed");
+            }
         } catch (err) {
-            setError(err.response?.data?.message || "Register failed");
+            setError(err.message || "Register failed");
         } finally {
             setLoading(false);
         }
