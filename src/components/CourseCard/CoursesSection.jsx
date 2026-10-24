@@ -21,13 +21,14 @@ export default function CoursesSection() {
     const [category, setCategory] = useState("");
     const [tags, setTags] = useState("");
 
-    const fetchCourses = async () => {
+
+    const fetchCourses = async (overridePage) => {
         try {
             setLoading(true);
             setError(null);
 
             const params = {
-                page,
+                page: overridePage !== undefined ? overridePage : page,
                 limit,
                 search: search || undefined,
                 sort: sort || undefined,
@@ -45,30 +46,45 @@ export default function CoursesSection() {
         }
     };
 
+
     useEffect(() => {
         fetchCourses();
         // eslint-disable-next-line
     }, [page, sort, category, tags]);
 
+
+    const handleSortChange = (newSort) => {
+        setSort(newSort);
+        setPage(1);
+    };
+
+    const handleCategoryChange = (newCategory) => {
+        setCategory(newCategory);
+        setPage(1);
+    };
+
+    const handleTagsChange = (newTags) => {
+        setTags(newTags);
+        setPage(1);
+    };
+
     const onSearchSubmit = (e) => {
         e.preventDefault();
         setPage(1);
-        fetchCourses();
+        fetchCourses(1); 
     };
-
-    // reset page when filters change
-    useEffect(() => {
-        setPage(1);
-    }, [sort, category, tags]);
 
     return (
         <div className="space-y-6">
-
             <CoursesFilters
-                search={search} setSearch={setSearch}
-                sort={sort} setSort={setSort}
-                category={category} setCategory={setCategory}
-                tags={tags} setTags={setTags}
+                search={search}
+                setSearch={setSearch}
+                sort={sort}
+                setSort={handleSortChange}     
+                category={category}
+                setCategory={handleCategoryChange} 
+                tags={tags}
+                setTags={handleTagsChange}       
                 onSearchSubmit={onSearchSubmit}
             />
 
@@ -95,7 +111,6 @@ export default function CoursesSection() {
                     </p>
                 </div>
             )}
-
 
             {!loading && !error && courses.length > 0 && (
                 <>

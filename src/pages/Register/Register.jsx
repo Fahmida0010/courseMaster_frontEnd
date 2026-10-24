@@ -121,7 +121,7 @@ export default function Register() {
                         <div className="form-control">
                             <div className="flex items-center justify-between mb-2">
                                 <label className="label py-0">
-                                    <span className="label-text text-xs sm:text-sm">Admin Registration (Optional)</span>
+                                    <span className="label-text text-xs sm:text-sm">Admin Registration</span>
                                 </label>
                                 <button
                                     type="button"

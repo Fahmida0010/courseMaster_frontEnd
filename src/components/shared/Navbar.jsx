@@ -37,7 +37,6 @@ export default function Navbar() {
                 setMe(userData);
             } catch (err) {
                 console.error("Failed to load user:", err);
-                // Catch block handling
             }
         };
         loadMe();
@@ -66,7 +65,7 @@ export default function Navbar() {
                         {(token && me) ? (
                             <li>
                                 <NavLink
-                                    className={navLinkClass}
+                                    className={`${navLinkClass} hover:bg-base-200 transition-colors duration-200`}
                                     to={me.role === "admin" ? "/admin" : "/student"}
                                 >
                                     Dashboard
@@ -104,24 +103,35 @@ export default function Navbar() {
 
                             <ul
                                 tabIndex={0}
-                                className="dropdown-content mt-3 p-3 shadow bg-base-100 rounded-box w-60 border border-base-300"
+                                className="dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-60 border border-base-300"
                             >
-                                <div className="px-2 pb-2">
+                                <div className="px-2 py-2">
                                     <p className="font-semibold">{me.name}</p>
                                     <p className="text-sm text-base-content/70">{me.email}</p>
                                     <p className="text-xs badge badge-outline mt-2">{me.role}</p>
                                 </div>
 
-                                <div className="my-2 border-t border-base-300" />
+                                <div className="my-1 border-t border-base-300" />
 
+                                {/* ✅ Desktop Dropdown Hover Effect Added */}
                                 <li>
-                                    <Link to={me.role === "admin" ? "/admin" : "/student"}>
+                                    <Link 
+                                        to={me.role === "admin" ? "/admin" : "/student"}
+                                        className="rounded-lg hover:bg-base-200 hover:text-primary transition-all duration-150"
+                                    >
                                         Dashboard
                                     </Link>
                                 </li>
-                                <li><Link to="/profile">Profile</Link></li>
                                 <li>
-                                    <button onClick={handleLogout} className="text-red-500">
+                                    <Link 
+                                        to="/profile"
+                                        className="rounded-lg hover:bg-base-200 hover:text-primary transition-all duration-150"
+                                    >
+                                        Profile
+                                    </Link>
+                                </li>
+                                <li>
+                                    <button onClick={handleLogout} className="rounded-lg hover:bg-error/10 text-red-500 transition-all duration-150">
                                         Logout
                                     </button>
                                 </li>
@@ -129,7 +139,7 @@ export default function Navbar() {
                         </div>
                     )}
 
-                    {/* Mobile hamburger - Removed max-h-32 restriction */}
+                    {/* Mobile hamburger */}
                     <div className="dropdown dropdown-end md:hidden">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
@@ -149,7 +159,7 @@ export default function Navbar() {
                             {token && me && (
                                 <li>
                                     <NavLink
-                                        className={navLinkClass}
+                                        className={`${navLinkClass} hover:bg-base-200 transition-colors duration-200`}
                                         to={me.role === "admin" ? "/admin" : "/student"}
                                     >
                                         Dashboard
@@ -180,15 +190,27 @@ export default function Navbar() {
 
                                     <div className="my-2 w-full border-t border-base-300" />
 
+                                    {/* ✅ Mobile Menu Hover Effect Added */}
                                     <li className="w-full">
-                                        <Link to={me?.role === "admin" ? "/admin" : "/student"} className="w-full">
+                                        <Link 
+                                            to={me?.role === "admin" ? "/admin" : "/student"} 
+                                            className="w-full justify-center rounded-lg hover:bg-base-200 hover:text-primary transition-all duration-150"
+                                        >
                                             Dashboard
                                         </Link>
                                     </li>
 
-                                    <li className="w-full"><Link to="/profile">Profile</Link></li>
                                     <li className="w-full">
-                                        <button onClick={handleLogout} className="btn btn-ghost btn-sm w-full text-red-500">
+                                        <Link 
+                                            to="/profile" 
+                                            className="w-full justify-center rounded-lg hover:bg-base-200 hover:text-primary transition-all duration-150"
+                                        >
+                                            Profile
+                                        </Link>
+                                    </li>
+                                    
+                                    <li className="w-full">
+                                        <button onClick={handleLogout} className="btn btn-ghost btn-sm w-full text-red-500 hover:bg-error/10">
                                             Logout
                                         </button>
                                     </li>

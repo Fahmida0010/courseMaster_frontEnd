@@ -35,7 +35,7 @@ export default function StudentDashboard() {
     };
 
     const loadCourseStats = async (courseId, forceRefresh = false) => {
-        if (!courseId) return; // আইডি না থাকলে রিটার্ন করবে
+        if (!courseId) return;
         if (courseStats[courseId] && !forceRefresh) return;
         if (loadingStats[courseId]) return;
 
